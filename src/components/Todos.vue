@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import '@/assets/main.css';
+import { generateClient } from 'aws-amplify/data';
 import { onMounted, ref } from 'vue';
 import type { Schema } from '../../amplify/data/resource';
-import { generateClient } from 'aws-amplify/data';
 
 const client = generateClient<Schema>();
 
@@ -29,7 +29,12 @@ function createTodo() {
 // fetch todos when the component is mounted
  onMounted(() => {
   listTodos();
-});
+ });
+
+   
+  function deleteTodo(id: string) {
+    client.models.Todo.delete({ id })
+  }
 
 </script>
 
@@ -40,7 +45,8 @@ function createTodo() {
     <ul>
       <li 
         v-for="todo in todos" 
-        :key="todo.id">
+        :key="todo.id"
+        @click="deleteTodo(todo.id)">
         {{ todo.content }}
       </li>
     </ul>
